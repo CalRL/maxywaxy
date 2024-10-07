@@ -21,7 +21,7 @@ export default function Home() {
       let newImageUrl = null;
       let attempts = 0;
       do {
-        const response = await fetch("/api/getRandomImage");
+        const response = await fetch("/max/api/getRandomImage");
         const data: ImageResponse = await response.json();
 
         if (response.ok && data.url) {
@@ -41,6 +41,32 @@ export default function Home() {
       setLoading(false);
     }
   };
+  function GenerationButton() {
+    const [status, setStatus] = useState<string | null>(null);
+
+    const handleGeneration = async () => {
+      try {
+        const response = await fetch("/max/api/generateAndStore", {
+          method: "POST",
+        });
+        const data = await response.json();
+        setStatus(data.message);
+      } catch (error) {
+        setStatus(`An error occurred:\n ${error}`);
+      }
+    };
+    return (
+      <div>
+        <button
+          onClick={handleGeneration}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          Generate and Store Image URLs
+        </button>
+        {status && <p>{status}</p>}
+      </div>
+    );
+  }
 
   return (
     <div className="text-center mt-8">
@@ -65,6 +91,8 @@ export default function Home() {
           />
         )}
       </div>
+
+      <GenerationButton />
     </div>
   );
 }
