@@ -52,24 +52,15 @@ export default async function handler(
         .json({ error: "File is required, and must have a valid path" });
     }
 
-    const tags = Array.isArray(fields.tags) ? fields.tags[0] : fields.tags;
-
-    if (!tags) {
-      return res.status(400).json({ error: "Tags are required" });
-    }
+    const tags = fields.tags
+      ? Array.isArray(fields.tags)
+        ? fields.tags[0]
+        : fields.tags
+      : "";
 
     // Read the file content
     const fileContent = fs.readFileSync(file.filepath);
 
-    // Upload the file to Supabase bucket
-    var exists = await supabase.storage
-      .from(BUCKET_NAME)
-      .exists(file.newFilename || file.originalFilename && );
-    if (exists) {
-      return res
-        .status(200)
-        .json({ message: "Image already exists in the database" });
-    }
     const { data, error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
       .upload(file.newFilename || file.originalFilename, fileContent, {
