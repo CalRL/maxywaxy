@@ -36,6 +36,8 @@ export default async function handler(
 
     // Extract the file from the formidable parsed object
     let file: formidable.File | undefined;
+    if (!files.file) return res.status(400);
+
     if (Array.isArray(files.file)) {
       file = files.file[0]; // If file is an array, use the first item
     } else {
@@ -58,8 +60,11 @@ export default async function handler(
         : fields.tags
       : "";
 
-    // Read the file content
     const fileContent = fs.readFileSync(file.filepath);
+
+    if (file.newFilename === null || file.originalFilename === null) {
+      return res.status(400).json({ message: "File name is null" });
+    }
 
     const { data, error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
