@@ -202,6 +202,32 @@ export default function AdminPage() {
       setLoading(false);
     }
   };
+  function GenerationButton() {
+    const [status, setStatus] = useState<string | null>(null);
+
+    const handleGeneration = async () => {
+      try {
+        const response = await fetch("/max/api/generateAndStore", {
+          method: "POST",
+        });
+        const data = await response.json();
+        setStatus(data.message);
+      } catch (error) {
+        setStatus(`An error occurred:\n ${error}`);
+      }
+    };
+    return (
+      <div>
+        <button
+          onClick={handleGeneration}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          Generate and Store Image URLs
+        </button>
+        {status && <p>{status}</p>}
+      </div>
+    );
+  }
 
   if (!isLoggedIn) {
     return (
@@ -276,6 +302,10 @@ export default function AdminPage() {
             )}
           </p>
         )}
+      </div>
+
+      <div className="flex justify-center">
+        <GenerationButton />
       </div>
 
       <div className="max-w-4xl mx-auto my-8 p-4 border rounded-lg shadow">
