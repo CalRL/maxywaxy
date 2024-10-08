@@ -172,23 +172,26 @@ export default function AdminPage() {
     setResponseMessage(null);
 
     try {
-      for (const file of bulkFiles) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("tags", "");
+      if (bulkFiles) {
+        const fileArray = Array.from(bulkFiles); // Convert FileList to array
 
-        const response = await fetch("/max/api/uploadImage", {
-          method: "POST",
-          body: formData,
-        });
+        for (const file of fileArray) {
+          const formData = new FormData();
+          formData.append("file", file);
 
-        const data = await response.json();
+          const response = await fetch("/max/api/uploadImage", {
+            method: "POST",
+            body: formData,
+          });
 
-        if (!response.ok) {
-          setResponseMessage(`Upload failed for ${file.name}: ${data.error}`);
+          const data = await response.json();
+
+          if (!response.ok) {
+            setResponseMessage(`Upload failed for ${file.name}: ${data.error}`);
+          }
         }
+        setResponseMessage("Bulk upload successful!");
       }
-      setResponseMessage("Bulk upload successful!");
     } catch (error) {
       setResponseMessage(
         `An error occurred during bulk upload. ${
