@@ -35,11 +35,7 @@ export default async function handler(
       if (!data) {
         throw new Error("Failed to get public URL for the image.");
       }
-
-      res.writeHead(302, {
-        Location: data.publicUrl,
-      });
-      res.end();
+      res.status(200).json({ url: data.publicUrl });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

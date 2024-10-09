@@ -21,7 +21,7 @@ export default function Home() {
       let newImageUrl = null;
       let attempts = 0;
       do {
-        const response = await fetch("/max/api/getRandomImage");
+        const response = await fetch("/max/api/random");
         const data: ImageResponse = await response.json();
 
         if (response.ok && data.url) {
